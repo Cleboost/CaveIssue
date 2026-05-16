@@ -51,6 +51,7 @@ Une application simple, modulaire et intelligente pour les employés de la cave,
 
 ### 9. Assignation Automatique
 - [x] Mapping automatique Catégorie -> Responsable/Service via l'IA
+- [x] Respect des règles d'assignation configurées par l'admin
 
 ### 10. Supervision Qualité (Admin)
 - [x] Dashboard de supervision avec indicateurs clés (KPIs)
@@ -75,17 +76,22 @@ Une application simple, modulaire et intelligente pour les employés de la cave,
 ### 15. Configuration et Modularité
 - [x] Interface de gestion des Zones (Ajout/Suppression)
 - [x] Interface de gestion des Catégories (Ajout/Suppression)
+- [x] Interface de gestion des Règles d'assignation
 
 ### 16. Données de Test (Seeding)
 - [x] Script de génération de données réalistes (Zones et Catégories) : `bun db:seed`
 
+### 17. Polissage UI/UX
+- [x] Refonte esthétique complète (Navigation, Dashboard, Listes, Détails)
+- [x] Design moderne et professionnel adapté au secteur viticole
+- [x] Utilisation de composants Shadcn avancés (Dropdown, Tabs, ScrollArea)
+
+### 18. Validation Finale
+- [ ] Test du parcours utilisateur complet (Employé -> IA -> Responsable -> Admin)
+- [ ] Vérification de la cohérence des notifications (Sonner)
+
 ---
 
-## Conclusion de la Phase 1
-Le MVP est fonctionnel. Le parcours utilisateur complet est implémenté :
-1. Un employé se connecte.
-2. Il signale un problème simplement.
-3. L'IA analyse, propose une fiche et demande des compléments.
-4. L'employé valide.
-5. Le responsable voit l'incident, le passe "En cours", ajoute des commentaires/actions.
-6. L'administrateur supervise le tout et clôture l'incident.
+## Prochaines étapes
+1. Effectuer une passe de test final pour valider le parcours complet.
+2. Préparer la documentation finale.
