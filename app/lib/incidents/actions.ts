@@ -20,13 +20,28 @@ export async function createIncident(formData: any) {
 
   const id = nanoid();
   
+  // Recherche d'une règle d'assignation dynamique si une catégorie a été identifiée
+  let finalAssignedTo = formData.responsible_service;
+  
+  if (formData.category) {
+    const matchedCategory = await db.query.category.findFirst({
+      where: (cat, { eq }) => eq(cat.name, formData.category)
+    });
+
+    if (matchedCategory) {
+      const rule = await db.query.assignmentRule.findFirst({
+        where: (r, { eq }) => eq(r.categoryId, matchedCategory.id)
+      });
+      if (rule) finalAssignedTo = rule.assignedTo;
+    }
+  }
+
   await db.insert(incident).values({
     id,
     reporterId: session.user.id,
     originalDescription: formData.originalDescription,
     title: formData.title,
-    // Assignation automatique basique : on utilise le service suggéré par l'IA
-    assignedTo: formData.responsible_service,
+    assignedTo: finalAssignedTo,
     aiSummary: formData.summary,
     aiSuggestedActions: JSON.stringify(formData.suggested_actions),
     aiMissingInfo: formData.missing_info,

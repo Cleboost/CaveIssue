@@ -53,3 +53,21 @@ export async function deleteCategory(id: string) {
   await db.delete(category).where(eq(category.id, id));
   revalidatePath('/admin/config');
 }
+
+export async function addAssignmentRule(categoryId: string, assignedTo: string) {
+  await checkAdmin();
+  await db.insert(assignmentRule).values({
+    id: nanoid(),
+    categoryId,
+    assignedTo,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  });
+  revalidatePath('/admin/config');
+}
+
+export async function deleteAssignmentRule(id: string) {
+  await checkAdmin();
+  await db.delete(assignmentRule).where(eq(assignmentRule.id, id));
+  revalidatePath('/admin/config');
+}
