@@ -14,6 +14,7 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "db:drop": "drizzle-kit drop",
+    "db:seed": "bun scripts/seed.ts",
     "db:up": "docker-compose up -d postgres",
     "db:down": "docker-compose down"
   },

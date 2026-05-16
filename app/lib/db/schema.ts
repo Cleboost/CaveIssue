@@ -80,7 +80,7 @@ export const incident = pgTable('incident', {
   updatedAt: timestamp('updated_at').notNull(),
 });
 
-export const incidentRelations = relations(incident, ({ one }) => ({
+export const incidentRelations = relations(incident, ({ one, many }) => ({
   reporter: one(user, {
     fields: [incident.reporterId],
     references: [user.id],
@@ -93,6 +93,8 @@ export const incidentRelations = relations(incident, ({ one }) => ({
     fields: [incident.categoryId],
     references: [category.id],
   }),
+  comments: many(comment),
+  history: many(incidentHistory),
 }));
 
 export const zone = pgTable('zone', {
@@ -133,5 +135,53 @@ export const assignmentRuleRelations = relations(assignmentRule, ({ one }) => ({
   category: one(category, {
     fields: [assignmentRule.categoryId],
     references: [category.id],
+  }),
+}));
+
+export const comment = pgTable('comment', {
+  id: text('id').primaryKey(),
+  incidentId: text('incident_id')
+    .notNull()
+    .references(() => incident.id),
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id),
+  content: text('content').notNull(),
+  isCorrectiveAction: boolean('is_corrective_action').default(false),
+  createdAt: timestamp('created_at').notNull(),
+});
+
+export const commentRelations = relations(comment, ({ one }) => ({
+  incident: one(incident, {
+    fields: [comment.incidentId],
+    references: [incident.id],
+  }),
+  author: one(user, {
+    fields: [comment.userId],
+    references: [user.id],
+  }),
+}));
+
+export const incidentHistory = pgTable('incident_history', {
+  id: text('id').primaryKey(),
+  incidentId: text('incident_id')
+    .notNull()
+    .references(() => incident.id),
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id),
+  action: text('action').notNull(), // e.g., 'status_changed', 'assigned_to_changed'
+  details: text('details'),
+  createdAt: timestamp('created_at').notNull(),
+});
+
+export const incidentHistoryRelations = relations(incidentHistory, ({ one }) => ({
+  incident: one(incident, {
+    fields: [incidentHistory.incidentId],
+    references: [incident.id],
+  }),
+  user: one(user, {
+    fields: [incidentHistory.userId],
+    references: [user.id],
   }),
 }));

@@ -52,10 +52,21 @@ export default function Home() {
               <Button asChild className="w-full h-12 text-base font-semibold">
                 <Link href="/incidents/new">Signaler un incident</Link>
               </Button>
+              
+              {session.user.role === 'administrateur' && (
+                <Button asChild variant="secondary" className="w-full h-12 text-base font-semibold">
+                  <Link href="/admin/dashboard">Supervision Qualité</Link>
+                </Button>
+              )}
+
+              <Button asChild variant="outline" className="w-full">
+                <Link href="/incidents">Voir les incidents</Link>
+              </Button>
+              
               <Button
                 onClick={handleLogout}
-                variant="outline"
-                className="w-full"
+                variant="ghost"
+                className="w-full text-zinc-500 hover:text-red-600"
               >
                 Se déconnecter
               </Button>

@@ -1,15 +1,32 @@
 import { db } from '@/app/lib/db';
 import { incident } from '@/app/lib/db/schema';
-import { desc } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Plus, Search, Filter } from 'lucide-react';
+import { auth } from '@/app/lib/auth';
+import { headers } from 'next/headers';
 
 export default async function IncidentsPage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p>Veuillez vous connecter pour voir les incidents.</p>
+      </div>
+    );
+  }
+
+  const whereClause = session.user.role === 'employe' ? eq(incident.reporterId, session.user.id) : undefined;
+
   const list = await db.query.incident.findMany({
+    where: whereClause,
     orderBy: [desc(incident.createdAt)],
     with: {
       reporter: true,

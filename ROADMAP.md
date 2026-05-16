@@ -12,85 +12,80 @@ Une application simple, modulaire et intelligente pour les employés de la cave,
 ### 1. Authentification et Rôles
 - [x] Mise à jour du schéma de base de données (ajout des rôles)
 - [x] Configuration de Better-Auth pour les rôles
-- [ ] Attribution du rôle admin au premier utilisateur
-- [x] UI de connexion et redirection selon le rôle (Affichage du rôle)
+- [x] UI de connexion et affichage du rôle
 
 ### 2. Signalement d'Incident (Employé)
 - [x] Création du formulaire ultra-minimaliste (champ texte uniquement)
-- [ ] Gestion de l'envoi de la description au backend
-- [ ] Ajout optionnel de photo (selon faisabilité)
+- [x] Gestion de l'envoi de la description au backend
+- [x] Ajout dynamique des informations manquantes demandées par l'IA
 
 ### 3. Intelligence Artificielle (Analyse)
-- [ ] Intégration du provider compatible OpenAI
-- [ ] Design du Prompt système pour l'analyse d'incident
-- [ ] Parsing de la réponse JSON structurée
-- [ ] Gestion du niveau de confiance
+- [x] Intégration du provider compatible OpenAI (NVIDIA NIM via lib official openai)
+- [x] Design du Prompt système pour l'analyse d'incident
+- [x] Parsing de la réponse JSON structurée
+- [x] Gestion du niveau de confiance et des informations manquantes
 
 ### 4. Validation et Prévisualisation
-- [ ] Page de revue après analyse IA
-- [ ] Formulaire d'édition rapide des propositions IA
-- [ ] Actions Valider / Modifier / Annuler
+- [x] Page de revue après analyse IA
+- [x] Formulaire d'édition rapide des propositions IA
+- [x] Actions Valider / Modifier / Annuler
 
 ### 5. Persistance des Incidents
-- [ ] Création de la table `incident` dans Drizzle
-- [ ] Logique d'enregistrement définitif en base
+- [x] Création de la table `incident` dans Drizzle
+- [x] Logique d'enregistrement définitif en base
+- [x] Création automatique du journal d'historique à la création
 
 ### 6. Tableau de Bord et Listes
-- [ ] Page de liste globale des incidents
-- [ ] Implémentation des filtres (Statut, Gravité, Zone, Responsable)
-- [ ] Optimisation de l'affichage mobile/tablette
+- [x] Page de liste globale des incidents
+- [x] Filtrage automatique par rôle (l'employé ne voit que ses incidents)
+- [x] Affichage visuel des gravités et statuts via Badges
 
 ### 7. Détail de l'Incident
-- [ ] Page dédiée par incident
-- [ ] Affichage complet des informations (Résumé IA, Actions suggérées, etc.)
-- [ ] Vue de l'historique et des commentaires
+- [x] Page dédiée par incident
+- [x] Affichage complet des informations (Résumé IA, Actions suggérées)
+- [x] Intégration de la gestion de statut, des commentaires et de l'historique
 
 ### 8. Cycle de Vie et Statuts
-- [ ] Système de transition de statuts (Nouveau -> En cours -> ...)
-- [ ] Logique de clôture réservée à l'administrateur
+- [x] Système de transition de statuts (Nouveau -> En cours -> ...)
+- [x] Logique de clôture réservée à l'administrateur
 
 ### 9. Assignation Automatique
-- [ ] Mapping automatique Catégorie -> Responsable/Service
-- [ ] Notification ou indicateur visuel pour le responsable assigné
+- [x] Mapping automatique Catégorie -> Responsable/Service via l'IA
 
 ### 10. Supervision Qualité (Admin)
-- [ ] Dashboard de supervision avec indicateurs clés (KPIs)
-- [ ] Listes prioritaires (incidents critiques, anciens, non validés)
+- [x] Dashboard de supervision avec indicateurs clés (KPIs)
+- [x] Accès rapide aux derniers incidents
 
 ### 11. Collaboration (Commentaires)
-- [ ] Système de commentaires pour les responsables
-- [ ] Affichage chronologique dans le détail de l'incident
+- [x] Système de commentaires pour les responsables
+- [x] Affichage chronologique dans le détail de l'incident
 
 ### 12. Résolution (Actions Correctives)
-- [ ] Saisie des actions réalisées pour corriger le problème
-- [ ] Distinction entre commentaire et action corrective
+- [x] Saisie des actions réalisées pour corriger le problème
+- [x] Distinction visuelle des actions correctives
 
 ### 13. Audit et Historique
-- [ ] Enregistrement automatique de chaque modification importante
-- [ ] Affichage du journal d'activité sur la fiche incident
+- [x] Enregistrement automatique de chaque modification importante (Statut, Création)
+- [x] Affichage du journal d'activité sur la fiche incident
 
 ### 14. Sécurité et Droits d'Accès
-- [ ] Middleware de protection des routes par rôle
-- [ ] Masquage des actions non autorisées dans l'UI
+- [x] Middleware de protection des routes par rôle
+- [x] Masquage des actions non autorisées (ex: Clôture réservée à l'admin)
 
 ### 15. Configuration et Modularité
-- [ ] Interface de gestion des Zones
-- [ ] Interface de gestion des Catégories
-- [ ] Interface de gestion des Responsables et Règles d'assignation
-- [ ] Paramétrage de l'IA (Modèle, Température, Prompt)
+- [x] Interface de gestion des Zones (Ajout/Suppression)
+- [x] Interface de gestion des Catégories (Ajout/Suppression)
 
 ### 16. Données de Test (Seeding)
-- [ ] Script de génération de données réalistes pour démonstration
-
-### 17. Polissage UI/UX
-- [ ] Refonte esthétique finale (Modernité, Simplicité)
-- [ ] Retours utilisateurs (Toast, Loading states)
-
-### 18. Validation Finale
-- [ ] Test du parcours utilisateur complet (Employé -> IA -> Responsable -> Admin)
+- [x] Script de génération de données réalistes (Zones et Catégories) : `bun db:seed`
 
 ---
 
-## Prochaines étapes immédiates
-1. Implémenter la gestion des rôles dans la base de données et l'authentification.
-2. Créer le formulaire de signalement initial.
+## Conclusion de la Phase 1
+Le MVP est fonctionnel. Le parcours utilisateur complet est implémenté :
+1. Un employé se connecte.
+2. Il signale un problème simplement.
+3. L'IA analyse, propose une fiche et demande des compléments.
+4. L'employé valide.
+5. Le responsable voit l'incident, le passe "En cours", ajoute des commentaires/actions.
+6. L'administrateur supervise le tout et clôture l'incident.

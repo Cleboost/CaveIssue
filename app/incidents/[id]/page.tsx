@@ -1,25 +1,58 @@
 import { db } from '@/app/lib/db';
 import { incident } from '@/app/lib/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Clock, MapPin, Tag, User, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { auth } from '@/app/lib/auth';
+import { headers } from 'next/headers';
+import { StatusManager } from '@/components/incidents/StatusManager';
+import { CommentSection } from '@/components/incidents/CommentSection';
+import { HistoryLog } from '@/components/incidents/HistoryLog';
 
 export default async function IncidentDetailPage({ params }: { params: { id: string } }) {
   const { id } = await params;
   
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p>Veuillez vous connecter pour voir les détails de l'incident.</p>
+      </div>
+    );
+  }
+
   const item = await db.query.incident.findFirst({
     where: eq(incident.id, id),
     with: {
       reporter: true,
+      comments: {
+        with: {
+          author: true,
+        },
+        orderBy: [desc(incident.createdAt)], // This is actually 'comment.createdAt' but the schema name is used in relations
+      },
+      history: {
+        with: {
+          user: true,
+        },
+        orderBy: [desc(incident.createdAt)],
+      }
     }
   });
 
   if (!item) {
     notFound();
   }
+
+  // Correction du tri car drizzle relations orderBy peut être capricieux sur les noms de colonnes dans with
+  const sortedComments = [...item.comments].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  const sortedHistory = [...item.history].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
   const suggestedActions = item.aiSuggestedActions ? JSON.parse(item.aiSuggestedActions) : [];
 
@@ -33,7 +66,7 @@ export default async function IncidentDetailPage({ params }: { params: { id: str
   };
 
   return (
-    <div className="container max-w-4xl py-8 px-4 mx-auto space-y-6">
+    <div className="container max-w-5xl py-8 px-4 mx-auto space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
@@ -47,9 +80,12 @@ export default async function IncidentDetailPage({ params }: { params: { id: str
             Déclaré le {item.createdAt.toLocaleDateString('fr-FR')} à {item.createdAt.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
           </p>
         </div>
-        <Badge variant="outline" className="w-fit text-sm px-3 py-1 capitalize border-primary text-primary font-semibold">
-          Statut : {item.status.replace('_', ' ')}
-        </Badge>
+        
+        <StatusManager 
+          incidentId={item.id} 
+          currentStatus={item.status} 
+          userRole={session.user.role} 
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -67,7 +103,7 @@ export default async function IncidentDetailPage({ params }: { params: { id: str
               <Separator />
               <div className="space-y-2">
                 <h3 className="font-semibold text-sm">Analyse IA :</h3>
-                <p className="text-zinc-600 dark:text-zinc-400">
+                <p className="text-zinc-600 dark:text-zinc-400 whitespace-pre-wrap">
                   {item.aiSummary}
                 </p>
               </div>
@@ -89,6 +125,12 @@ export default async function IncidentDetailPage({ params }: { params: { id: str
               </ul>
             </CardContent>
           </Card>
+
+          <CommentSection 
+            incidentId={item.id} 
+            comments={sortedComments} 
+            currentUser={session.user} 
+          />
         </div>
 
         <div className="space-y-6">
@@ -127,6 +169,8 @@ export default async function IncidentDetailPage({ params }: { params: { id: str
               </div>
             </CardContent>
           </Card>
+
+          <HistoryLog history={sortedHistory} />
         </div>
       </div>
     </div>
