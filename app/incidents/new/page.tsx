@@ -61,7 +61,7 @@ export default function NewIncidentPage() {
               />
             </div>
           </CardContent>
-          <div className="p-6 pt-0">
+          <div className="p-6">
             <Button type="submit" className="w-full h-11 text-base font-semibold" disabled={loading || !description.trim()}>
               {loading ? 'Analyse en cours...' : 'Envoyer pour analyse'}
             </Button>
