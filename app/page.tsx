@@ -17,7 +17,7 @@ import { db } from '@/app/lib/db';
 import { incident } from '@/app/lib/db/schema';
 import { count, eq, and, ne, desc } from 'drizzle-orm';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/app/lib/utils';
+import { cn } from './lib/utils';
 
 export default async function Home() {
   const session = await auth.api.getSession({
