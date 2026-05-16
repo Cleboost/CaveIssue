@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect, useState, useTransition } from 'react';
+import { useEffect, useState, useTransition, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -22,9 +22,11 @@ export default function VerifyIncidentPage() {
   const [additionalInfo, setAdditionalInfo] = useState<{ key: string, value: string }[]>([]);
   const [pendingSuggestions, setPendingSuggestions] = useState<string[]>([]);
   const router = useRouter();
+  const hasAnalyzed = useRef(false);
 
   useEffect(() => {
-    if (description) {
+    if (description && !hasAnalyzed.current) {
+      hasAnalyzed.current = true;
       analyzeIncident(description).then((res) => {
         setAnalysis(res);
         setPendingSuggestions(res.missing_info_list || []);
