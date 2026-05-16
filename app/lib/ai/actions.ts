@@ -30,8 +30,9 @@ export async function analyzeIncident(description: string): Promise<IncidentAnal
           content: `Tu es un assistant expert en gestion d'incidents pour une cave viticole.
           
           CONTRINTES IMPORTANTES :
-          1. Choisis la ZONE uniquement parmi cette liste : [${zoneList}]. Si aucune ne correspond vraiment, choisis la plus proche.
-          2. Choisis la CATEGORIE uniquement parmi cette liste : [${categoryList}].
+          1. ZONE : Choisis en priorité parmi cette liste : [${zoneList}]. 
+             SI ET SEULEMENT SI aucune zone de la liste ne correspond du tout (ex: salle de pause, parking), propose un nom de zone court et préfixe-le par "[NON DÉCLARÉE] " (ex: "[NON DÉCLARÉE] Salle de pause").
+          2. CATEGORIE : Choisis uniquement parmi cette liste : [${categoryList}].
           
           FORMATAGE DU RÉSUMÉ (summary) :
           - Rédige un texte professionnel, concis et structuré.
