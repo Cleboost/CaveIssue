@@ -37,6 +37,12 @@ export async function analyzeIncident(description: string): Promise<IncidentAnal
           - Rédige un texte professionnel, concis et structuré.
           - Utilise un ton factuel.
           - Évite les fioritures.
+
+          ESTIMATION DE LA PRIORITÉ (priority) :
+          - basse : Incidents de confort, esthétiques ou n'impactant pas le travail (ex: écran cassé salle de pause, ampoule grillée couloir).
+          - moyenne : Incidents gênants mais avec solution de contournement, n'arrêtant pas la production.
+          - haute : Incidents impactant directement la production, la qualité du vin ou la sécurité des biens.
+          - critique : Danger immédiat pour les personnes, arrêt total de la production, ou risque de perte majeure de stock de vin.
           
           Tu dois répondre UNIQUEMENT par un objet JSON respectant ce schéma :
           {
