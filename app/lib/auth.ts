@@ -11,5 +11,14 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  user: {
+    additionalFields: {
+      role: {
+        type: 'string',
+        required: true,
+        defaultValue: 'employe',
+      },
+    },
+  },
   trustedOrigins: ['http://localhost:3000'],
 });

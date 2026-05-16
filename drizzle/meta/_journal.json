@@ -8,6 +8,20 @@
       "when": 1778781450985,
       "tag": "0000_small_sersi",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1778936929493,
+      "tag": "0001_slow_tiger_shark",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1778937083910,
+      "tag": "0002_outgoing_blue_marvel",
+      "breakpoints": true
     }
   ]
 }

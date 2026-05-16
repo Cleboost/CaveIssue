@@ -36,20 +36,30 @@ export default function Home() {
               <h1 className="text-2xl font-bold tracking-tight">
                 Bienvenue, {session.user.name} !
               </h1>
-              <p className="text-zinc-600 dark:text-zinc-400">
-                Vous êtes bien connecté avec l'adresse <br />
-                <span className="font-medium text-zinc-900 dark:text-zinc-100">
+              <div className="flex flex-col gap-1">
+                <p className="text-zinc-600 dark:text-zinc-400 text-sm">
+                  Connecté en tant que : <br />
+                  <span className="font-semibold text-primary capitalize">
+                    {session.user.role || 'employe'}
+                  </span>
+                </p>
+                <p className="text-zinc-500 dark:text-zinc-500 text-xs">
                   {session.user.email}
-                </span>
-              </p>
+                </p>
+              </div>
             </div>
-            <Button
-              onClick={handleLogout}
-              variant="destructive"
-              className="w-full"
-            >
-              Se déconnecter
-            </Button>
+            <div className="flex flex-col gap-3 w-full mt-4">
+              <Button asChild className="w-full h-12 text-base font-semibold">
+                <Link href="/incidents/new">Signaler un incident</Link>
+              </Button>
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                className="w-full"
+              >
+                Se déconnecter
+              </Button>
+            </div>
           </>
         ) : (
           <>
