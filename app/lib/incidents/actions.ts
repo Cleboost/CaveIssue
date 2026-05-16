@@ -20,15 +20,25 @@ export async function createIncident(formData: any) {
 
   const id = nanoid();
   
-  // Recherche d'une règle d'assignation dynamique si une catégorie a été identifiée
-  let finalAssignedTo = formData.responsible_service;
-  
+  // Résolution des IDs pour la zone et la catégorie à partir de leurs noms
+  let zoneId = null;
+  let categoryId = null;
+  let finalAssignedTo = formData.responsible_service || 'Maintenance';
+
+  if (formData.zone) {
+    const matchedZone = await db.query.zone.findFirst({
+      where: (z, { eq }) => eq(z.name, formData.zone)
+    });
+    if (matchedZone) zoneId = matchedZone.id;
+  }
+
   if (formData.category) {
     const matchedCategory = await db.query.category.findFirst({
       where: (cat, { eq }) => eq(cat.name, formData.category)
     });
 
     if (matchedCategory) {
+      categoryId = matchedCategory.id;
       const rule = await db.query.assignmentRule.findFirst({
         where: (r, { eq }) => eq(r.categoryId, matchedCategory.id)
       });
@@ -41,6 +51,8 @@ export async function createIncident(formData: any) {
     reporterId: session.user.id,
     originalDescription: formData.originalDescription,
     title: formData.title,
+    zoneId,
+    categoryId,
     assignedTo: finalAssignedTo,
     aiSummary: formData.summary,
     aiSuggestedActions: JSON.stringify(formData.suggested_actions),

@@ -44,6 +44,8 @@ export default async function IncidentDetailPage({ params }: { params: { id: str
     where: eq(incident.id, id),
     with: {
       reporter: true,
+      zone: true,
+      category: true,
       comments: {
         with: {
           author: true,
@@ -191,7 +193,7 @@ export default async function IncidentDetailPage({ params }: { params: { id: str
                     </div>
                     <div>
                       <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Localisation</p>
-                      <p className="font-semibold text-zinc-900 dark:text-zinc-100">{item.zoneId || 'Non spécifiée'}</p>
+                      <p className="font-semibold text-zinc-900 dark:text-zinc-100">{(item as any).zone?.name || item.zoneId || 'Non spécifiée'}</p>
                     </div>
                   </div>
 
@@ -201,7 +203,7 @@ export default async function IncidentDetailPage({ params }: { params: { id: str
                     </div>
                     <div>
                       <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Type d'incident</p>
-                      <p className="font-semibold text-zinc-900 dark:text-zinc-100">{item.categoryId || 'Non spécifiée'}</p>
+                      <p className="font-semibold text-zinc-900 dark:text-zinc-100">{(item as any).category?.name || item.categoryId || 'Non spécifiée'}</p>
                     </div>
                   </div>
 
