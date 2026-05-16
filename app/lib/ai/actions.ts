@@ -2,8 +2,17 @@
 
 import OpenAI from 'openai';
 import { incidentAnalysisSchema } from './schema';
+import { db } from '@/app/lib/db';
+import { zone as zoneTable, category as categoryTable } from '@/app/lib/db/schema';
 
 export async function analyzeIncident(description: string) {
+  // Récupération des zones et catégories existantes pour guider l'IA
+  const zones = await db.select({ name: zoneTable.name }).from(zoneTable);
+  const categories = await db.select({ name: categoryTable.name }).from(categoryTable);
+  
+  const zoneList = zones.map(z => z.name).join(', ');
+  const categoryList = categories.map(c => c.name).join(', ');
+
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
     baseURL: process.env.OPENAI_API_BASE_URL,
@@ -16,17 +25,22 @@ export async function analyzeIncident(description: string) {
         {
           role: 'system',
           content: `Tu es un assistant expert en gestion d'incidents pour une cave viticole.
+          
+          CONTRINTES IMPORTANTES :
+          1. Choisis la ZONE uniquement parmi cette liste : [${zoneList}]. Si aucune ne correspond vraiment, choisis la plus proche.
+          2. Choisis la CATEGORIE uniquement parmi cette liste : [${categoryList}].
+          
           Tu dois répondre UNIQUEMENT par un objet JSON respectant ce schéma :
           {
             "title": "titre court",
-            "zone": "zone concernée",
-            "category": "catégorie",
+            "zone": "nom de la zone exacte choisie dans la liste",
+            "category": "nom de la catégorie exacte choisie dans la liste",
             "priority": "basse" | "moyenne" | "haute" | "critique",
-            "responsible_service": "service responsable",
-            "summary": "résumé clair",
+            "responsible_service": "service responsable suggéré",
+            "summary": "résumé clair et professionnel",
             "suggested_actions": ["action 1", "action 2"],
-            "missing_info_list": ["info manquante 1", "info manquante 2"],
-            "confidence": 0.0 à 1.0
+            "missing_info_list": ["liste des informations manquantes pour une résolution complète"],
+            "confidence": 0.0 à 1.0 (ton niveau de certitude)
           }`
         },
         {
